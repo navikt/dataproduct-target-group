@@ -65,7 +65,7 @@ def run_target_group():
         bigquery.SchemaField("source_aligned", bigquery.enums.SqlTypeNames.BOOLEAN, description="True hvis teamet har apper der data oppstår")
         ]
 
-    # Skriver data
+    # Skriver data daaa
     client = bigquery.Client()
 
     project, dataset, table_name = "nada-prod-6977", "platform_users", "target_group"
