@@ -12,6 +12,9 @@ spec:
   successfulJobsHistoryLimit: 1
   backoffLimit: 2
   concurrencyPolicy: Forbid
+  resources:
+    limits:
+      memory: 8GiB
   gcp:
     bigQueryDatasets:
     - description: Metrikker på konsum av dataprodukter
