@@ -66,7 +66,7 @@ def run_target_group():
         ]
 
     # Skriver data daaa
-    client = bigquery.Client()
+    client = bigquery.Client(project="nada-prod-6977")
 
     project, dataset, table_name = "nada-prod-6977", "platform_users", "target_group"
     table_id = f"{project}.{dataset}.{table_name}"
