@@ -1,29 +1,40 @@
-name: Deploy dataproduct target group
+name: Build, push, and deploy
 
-on: push
-
-env:
-  IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
+on:
+  push:
+    branches:
+     - main
 
 jobs:
   build:
+    name: Build and push Docker container
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
-    - name: Login to GitHub Container Registry
-      uses: docker/login-action@ab80d026d4753220c4243394c07c7d80f9638d06 # Use commit-sha1 instead of tag for security concerns
+    - uses: actions/checkout@v4
+    - name: Push docker image to GAR
+      uses: nais/docker-build-push@v0
+      id: docker-build-push
       with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Build and publish Docker image
-      run: |
-        docker build . --pull --tag ${IMAGE}
-        docker push ${IMAGE}
-    - name: Deploy to prod-gcp
-      uses: nais/deploy/actions/deploy@master
+        team: nada
+        identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }} # Provided as Organization Secret
+        project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }} # Provided as Organization Variable
+
+  deploy:
+    name: Deploy to NAIS
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+    - uses: actions/checkout@v4
+    - uses: nais/deploy/actions/deploy@v2
       env:
-        APIKEY: ${{ secrets.NAIS_DEPLOY_KEY }}
         CLUSTER: prod-gcp
         RESOURCE: .nais/naisjob.yaml,.nais/alert.yaml
+        VAR: image=${{ needs.build.outputs.image }}
