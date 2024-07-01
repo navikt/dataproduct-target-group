@@ -1,4 +1,4 @@
-FROM python:3.12-alpine
+FROM python:3.12-bullseye
 
 RUN pip install --upgrade pip
 COPY requirements.txt .
