@@ -5,6 +5,7 @@ WORKDIR /src
 RUN python3 -m venv /app
 ENV PATH=/app/bin:$PATH
 
+RUN pip install --upgrade pip
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
