@@ -1,4 +1,5 @@
 import pandas as pd
+import pandas_gbq
 from google.cloud import bigquery
 
 
@@ -13,13 +14,13 @@ def run_target_group():
         return list_of_ids
 
     # Henter data fra teamkatalogen
-    df = pd.read_gbq('select clusterIds, id as team_id, name, naisTeams, productAreaId from org-prod-1016.teamkatalogen.teams', project_id="nada-prod-6977")
+    df = pandas_gbq.read_gbq('select clusterIds, id as team_id, name, naisTeams, productAreaId from org-prod-1016.teamkatalogen.teams', project_id="nada-prod-6977")
 
     # Beholder oversikten over naisteams til å koble med source aligned
     df_nais_teams = df.explode("naisTeams")
 
     ### Henter ut source-aligned teams
-    df_source_team = pd.read_gbq("select dato, team, cluster, name from aura-prod-d7e3.dataproduct_apps.dataproduct_apps_unique", project_id="nada-prod-6977")
+    df_source_team = pandas_gbq.read_gbq("select dato, team, cluster, name from aura-prod-d7e3.dataproduct_apps.dataproduct_apps_unique", project_id="nada-prod-6977")
 
     df_source_team.drop_duplicates(inplace=True) # Vil kun ha en per dag
 
