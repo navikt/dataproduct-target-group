@@ -1,4 +1,4 @@
-FROM python:3.11-bullseye AS build
+FROM python:3.13-bullseye AS build
 
 WORKDIR /src
 
