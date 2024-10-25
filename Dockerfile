@@ -1,19 +1,18 @@
-FROM python:3.11-bullseye AS build
+FROM cgr.dev/chainguard/python:latest-dev AS builder
 
-WORKDIR /src
+WORKDIR /app
 
-RUN python3 -m venv /app
-ENV PATH=/app/bin:$PATH
-
-RUN pip install --upgrade pip
-COPY requirements.txt .
+RUN python3 -m venv venv
+ENV PATH=/app/venv/bin:$PATH
+COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-FROM gcr.io/distroless/python3-debian12 AS final
+FROM cgr.dev/chainguard/python:latest AS runner
+
+WORKDIR /app
 
 COPY ETL/main.py .
-COPY --from=build /app /app
-ENV PATH=/app/bin:$PATH
-ENV PYTHONPATH=/app/lib/python3.11/site-packages:$PYTHONPATH
+COPY --from=builder /app/venv /app/venv
+ENV PATH="/app/venv/bin:$PATH"
 
-CMD ["main.py"]
+ENTRYPOINT ["python", "main.py"]
