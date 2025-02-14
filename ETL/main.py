@@ -26,8 +26,8 @@ def run_target_group():
     df_nais_teams = df.explode("naisTeams")
 
     ### Henter ut source-aligned teams
-    logging.info("Loading data from aura-prod-d7e3.dataproduct_apps.dataproduct_apps_unique")
-    df_source_team = pandas_gbq.read_gbq("select dato, team, cluster, name from aura-prod-d7e3.dataproduct_apps.dataproduct_apps_unique", project_id="nada-prod-6977")
+    logging.info("Loading data from aura-prod-d7e3.dataproduct_apps.dataproduct_apps_unique_v3")
+    df_source_team = pandas_gbq.read_gbq("select dato, team, cluster, name from aura-prod-d7e3.dataproduct_apps.dataproduct_apps_unique_v3", project_id="nada-prod-6977")
 
     df_source_team.drop_duplicates(inplace=True) # Vil kun ha en per dag
 
@@ -46,7 +46,7 @@ def run_target_group():
     df = df.explode("cluster_id")
 
     # Og beholder kun de som matcher DVH-clusteret
-    df_data_team = df[df["cluster_id"] == "eeba714e-fbae-4102-bad3-5e41cc275c6e"]
+    df_data_team = df[df["cluster_id"] == "eeba714e-fbae-4102-bad3-5e41cc275c6e"].copy()
     df_data_team["source_aligned"] = False
 
     df_data_team = df_data_team.explode("naisTeams")
