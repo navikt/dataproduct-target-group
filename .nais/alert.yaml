@@ -1,22 +1,22 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: metrics-markedsplassen-alert
+  name: dataproduct-target-group-alert
   namespace: nada
   labels:
     team: nada
 spec:
   groups:
-  - name: metrics-markedsplassen-alert
+  - name: dataproduct-target-group-alert
     rules:
     - alert: NaisjobDown
-      expr: kube_job_failed{job_name=~"^metrics-markedsplassen.*", namespace="nada"} > 0
+      expr: kube_job_failed{job_name=~"^dataproduct-target-group.*", namespace="nada"} > 0
       for: 2m
       annotations:
-        consequence: Dataprodukt for markedsplassen metrikker blir ikke oppdatert
-        action: "`Se logger på https://logs.adeo.no -> søk etter pod:metrics-markedsplassen* AND namespace:nada`"
+        consequence: Dataprodukt for målgrupper blir ikke oppdatert
+        action: "`Se logger på https://logs.adeo.no -> søk etter pod:dataproduct-target-group* AND namespace:nada`"
         summary: |-
-           Naisjob metrics-markedsplassen feiler i prod-gcp namespace nada (repo https://github.com/navikt/metrics-dataplatform)
+           Naisjob dataproduct-target-group feiler i prod-gcp namespace nada (repo https://github.com/navikt/dataproduct-target-group)
       labels:
         namespace: nada
         severity: critical
