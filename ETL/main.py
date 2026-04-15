@@ -26,8 +26,8 @@ def run_target_group():
     df_nais_teams = df.explode("naisTeams")
 
     ### Henter ut source-aligned teams
-    logging.info("Loading data from aura-prod-d7e3.dataproduct_apps.dataproduct_apps_unique_v3")
-    df_source_team = pandas_gbq.read_gbq("select dato, team, cluster, name from aura-prod-d7e3.dataproduct_apps.dataproduct_apps_unique_v3", project_id="nada-prod-6977")
+    logging.info("Loading data from nais-prod-b6f2.dataproduct_apps.unique")
+    df_source_team = pandas_gbq.read_gbq("select dato, team, cluster, name from nais-prod-b6f2.dataproduct_apps.unique", project_id="nada-prod-6977")
 
     df_source_team.drop_duplicates(inplace=True) # Vil kun ha en per dag
 
